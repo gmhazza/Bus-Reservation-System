@@ -1,10 +1,14 @@
+
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class Main {
     public static void main(String[] args) {
+
         JFrame parentFrame = new JFrame("AirBus Pro");
         JPanel bookingPanel = new JPanel();
         Booking bookingBoard = new Booking();
@@ -80,6 +84,7 @@ class SeatMap extends JPanel {
 
 class Seat extends JButton {
     private int row;
+
     private int column;
     private String seatNumber;
     private boolean isBooked;
@@ -97,6 +102,11 @@ class Seat extends JButton {
         this.category = category;
         this.isBooked = false;
         this.setText("Seat " + seatNumber);
+        if (category == Category.VIP) {
+            this.price = 1000;
+        } else {
+            this.price = 500;
+        }
     }
 
     public void markAsBooked() {
@@ -110,11 +120,18 @@ class Seat extends JButton {
     public String getSeatNumber() {
         return seatNumber;
     }
+    public String getCategory() {
+        return category.toString();
+    }
+    public int getPrice() {
+        return price;
+    }
 
 }
 
 class Booking extends JPanel {
     private Seat seat;
+
     private String name;
     private String phoneNumber;
     private JLabel bookingLabel;
@@ -125,6 +142,10 @@ class Booking extends JPanel {
     private JTextField phoneNumberField;
     private JLabel seatLabel;
     private JLabel seatField;
+    private JLabel seatCategoryLabel;
+    private JLabel seatCategoryField;
+    private JLabel priceLabel;
+    private JLabel priceField;
     private JButton confirmButton;
     private JButton viewBookingButton;
     private JPanel buttonPanel;
@@ -141,12 +162,16 @@ class Booking extends JPanel {
         phoneNumberField = new JTextField(10);
         seatLabel = new JLabel("Seat Number: ");
         seatField = new JLabel("Not Selected");
+        seatCategoryLabel = new JLabel("Seat Category: ");
+        seatCategoryField = new JLabel("N/A");
+        priceLabel = new JLabel("Price: ");
+        priceField = new JLabel("N/A");
         confirmButton = new JButton("Confirm");
         viewBookingButton = new JButton("View Booking");
         buttonPanel = new JPanel();
 
         bookingLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
-        nameRegistryPanel.setLayout(new GridLayout(4, 2, 30, 30));
+        nameRegistryPanel.setLayout(new GridLayout(5, 2, 30, 30));
 
         confirmButton.addActionListener(e -> {
             if (seat == null) {
@@ -173,15 +198,25 @@ class Booking extends JPanel {
             JDialog bookingDialog = new JDialog();
 
             bookingDialog.setTitle("Current Bookings");
-            bookingDialog.setSize(600, 600);
+            bookingDialog.setSize(600, 400);
             bookingDialog.setLocationRelativeTo(null);
             bookingDialog.setModal(true);
-            bookingDialog.setVisible(true);
 
             String[] columns = {"#", "Name", "Phone", "Seat"};
             DefaultTableModel model = new DefaultTableModel(columns, 0);
 
-            this.add(bookingDialog);
+            for (int i = 0; i < BookingInformation.bookings.size(); i++) {
+                BookingRecord b = BookingInformation.bookings.get(i);
+                model.addRow(new Object[]{i + 1, b.name, b.phoneNumber, b.seat.getSeatNumber()});
+            }
+
+            JTable table = new JTable(model);
+            table.setDefaultEditor(Object.class, null); // read only
+            table.setRowHeight(30);
+            table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+
+            bookingDialog.add(new JScrollPane(table));
+            bookingDialog.setVisible(true);
         });
 
         nameRegistryPanel.add(nameLabel);
@@ -190,6 +225,10 @@ class Booking extends JPanel {
         nameRegistryPanel.add(phoneNumberField);
         nameRegistryPanel.add(seatLabel);
         nameRegistryPanel.add(seatField);
+        nameRegistryPanel.add(seatCategoryLabel);
+        nameRegistryPanel.add(seatCategoryField);
+        nameRegistryPanel.add(priceLabel);
+        nameRegistryPanel.add(priceField);
         buttonPanel.add(confirmButton);
         buttonPanel.add(viewBookingButton);
         this.add(bookingLabel);
@@ -201,10 +240,13 @@ class Booking extends JPanel {
     public void setSeat(Seat seat) {
         this.seat = seat;
         seatField.setText(seat.getSeatNumber());
+        seatCategoryField.setText(seat.getCategory());
+        priceField.setText("PKR " + seat.getPrice());
     }
 }
 
 class BookingRecord {
+
     public String name;
     public String phoneNumber;
     public Seat seat;
@@ -217,6 +259,7 @@ class BookingRecord {
 }
 
 class BookingInformation {
+
     static public ArrayList<BookingRecord> bookings = new ArrayList<>();
 
     public static void addBooking(String name, String phoneNumber, Seat seat) {
