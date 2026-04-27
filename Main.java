@@ -1,12 +1,15 @@
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.Cursor;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Main {
+
     public static void main(String[] args) {
 
         try {
@@ -18,6 +21,9 @@ public class Main {
         JFrame parentFrame = new JFrame("AirBus Pro");
         JPanel bookingPanel = new JPanel();
         Booking bookingBoard = new Booking();
+
+        parentFrame.getContentPane().setBackground(ColorPallete.BG);
+
 
         bookingPanel.setLayout(new GridLayout(1, 2));
 
@@ -35,11 +41,14 @@ public class Main {
 
     public static JPanel renderTitleSection() {
         JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(ColorPallete.PRIMARY);
         titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 30, 0));
         JLabel titleLabel = new JLabel("AirBus Pro");
+        titleLabel.setForeground(Color.WHITE);
         titleLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 24));
         JLabel subtitleLabel = new JLabel("Book your Bus Seats with Ease");
+        subtitleLabel.setForeground(Color.WHITE);
         subtitleLabel.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
         titlePanel.add(titleLabel);
         titlePanel.add(subtitleLabel);
@@ -50,7 +59,7 @@ public class Main {
 class SeatMap extends JPanel {
 
     public SeatMap(Booking booking) {
-        this.setLayout(new GridLayout(5, 2, 30, 30));
+        this.setLayout(new GridLayout(5, 2, 20, 20));
         this.setBorder(BorderFactory.createEmptyBorder(0, 30, 30, 30));
 
         Seat s1 = new Seat("V1", 0, 0, Seat.Category.VIP);
@@ -63,6 +72,17 @@ class SeatMap extends JPanel {
         Seat s8 = new Seat("E4", 3, 1, Seat.Category.ECONOMY);
         Seat s9 = new Seat("E5", 4, 0, Seat.Category.ECONOMY);
         Seat s10 = new Seat("E6", 4, 1, Seat.Category.ECONOMY);
+
+        s1.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s2.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s3.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s4.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s5.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s6.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s7.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s8.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s9.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        s10.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         s1.addActionListener(e -> booking.setSeat(s1));
         s2.addActionListener(e -> booking.setSeat(s2));
@@ -89,6 +109,7 @@ class SeatMap extends JPanel {
 }
 
 class Seat extends JButton {
+
     private int row;
     private int column;
     private String seatNumber;
@@ -125,15 +146,19 @@ class Seat extends JButton {
     public String getSeatNumber() {
         return seatNumber;
     }
+
     public String getCategory() {
         return category.toString();
     }
+
     public int getPrice() {
         return price;
     }
+
     public int getRow() {
         return row;
     }
+
     public int getColumn() {
         return column;
     }
@@ -141,6 +166,7 @@ class Seat extends JButton {
 }
 
 class Booking extends JPanel {
+
     private Seat seat;
 
     private String name;
@@ -163,7 +189,7 @@ class Booking extends JPanel {
 
     public Booking() {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(BorderFactory.createEmptyBorder(0, 30, 30, 30));
+        this.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
 
         bookingLabel = new JLabel("Booking Details: ");
         nameRegistryPanel = new JPanel();
@@ -181,8 +207,10 @@ class Booking extends JPanel {
         viewBookingButton = new JButton("View Booking");
         buttonPanel = new JPanel();
 
-        bookingLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 18));
-        nameRegistryPanel.setLayout(new GridLayout(5, 2, 30, 30));
+        bookingLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 20));
+        nameRegistryPanel.setLayout(new GridLayout(5, 2, 20, 20));
+
+        confirmButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         confirmButton.addActionListener(e -> {
             if (seat == null) {
@@ -204,6 +232,8 @@ class Booking extends JPanel {
                 JOptionPane.showMessageDialog(this, "Booking Confirmed!", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+
+        viewBookingButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         viewBookingButton.addActionListener(e -> {
             JDialog bookingDialog = new JDialog();
@@ -267,6 +297,11 @@ class BookingRecord {
         this.phoneNumber = phoneNumber;
         this.seat = seat;
     }
+}
+
+class ColorPallete {
+    public final static Color PRIMARY = new Color(0x2c3e50); // dark blue
+    public final static Color BG = new Color(0xf5f6fa); // light gray background
 }
 
 class BookingInformation {
