@@ -9,6 +9,12 @@ import javax.swing.table.DefaultTableModel;
 public class Main {
     public static void main(String[] args) {
 
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         JFrame parentFrame = new JFrame("AirBus Pro");
         JPanel bookingPanel = new JPanel();
         Booking bookingBoard = new Booking();
@@ -84,7 +90,6 @@ class SeatMap extends JPanel {
 
 class Seat extends JButton {
     private int row;
-
     private int column;
     private String seatNumber;
     private boolean isBooked;
@@ -125,6 +130,12 @@ class Seat extends JButton {
     }
     public int getPrice() {
         return price;
+    }
+    public int getRow() {
+        return row;
+    }
+    public int getColumn() {
+        return column;
     }
 
 }
@@ -202,12 +213,12 @@ class Booking extends JPanel {
             bookingDialog.setLocationRelativeTo(null);
             bookingDialog.setModal(true);
 
-            String[] columns = {"#", "Name", "Phone", "Seat"};
+            String[] columns = {"Sr", "Name", "Phone", "Seat", "Row", "Column", "Category", "Price"};
             DefaultTableModel model = new DefaultTableModel(columns, 0);
 
             for (int i = 0; i < BookingInformation.bookings.size(); i++) {
                 BookingRecord b = BookingInformation.bookings.get(i);
-                model.addRow(new Object[]{i + 1, b.name, b.phoneNumber, b.seat.getSeatNumber()});
+                model.addRow(new Object[]{i + 1, b.name, b.phoneNumber, b.seat.getSeatNumber(), b.seat.getRow() + 1, b.seat.getColumn() + 1, b.seat.getCategory(), "PKR " + b.seat.getPrice()});
             }
 
             JTable table = new JTable(model);
